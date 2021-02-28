@@ -2,16 +2,23 @@
 # Each screen will be able to access this file and call the desired function 
 
 # import modules
-import mysql.connector 
+import mysql.connector
 
-# this function creates the schema
-def create_db():
+# variables for connections, host is local in this case since on this machine, 
+# also user and password are set up when installed onto machine, these are the values I chose.
+HOST_ID = "localhost"
+USER_ID = "root"
+PASSWORD_ID = "@rkARD$1921#"
+DATABASE_ID = "arkards"
 
-	# connect to 
+# this function creates the schema, also creates tables to go into schema
+def start_db():
+
+	# connect to mysql sever
 	mydb = mysql.connector.connect(
-		host = "localhost",
-		user = "root",
-		password = "@rkARD$1921#"
+		host = HOST_ID,
+		user = USER_ID,
+		password = PASSWORD_ID
 	)
 
 	# cursor instance
@@ -20,53 +27,30 @@ def create_db():
 	# create arkards database if not already
 	cursor.execute("CREATE DATABASE IF NOT EXISTS arkards")	
 
-	# close connections
-	cursor.close()
-	mydb.close()
-
-
-# this fuction creates the tables intade the created schema
-def create_tables():
-
-	# connect to 
-	mydb = mysql.connector.connect(
-		host = "localhost",
-		user = "root",
-		password = "@rkARD$1921#",
-		database = "arkards"
-	)
-
-	# cursor instance
-	cursor = mydb.cursor()
 
 	# create tables if not already
-	cursor.execute("CREATE TABLE IF NOT EXISTS users (username VARCHAR(25), password VARCHAR(25))")
-	cursor.execute("CREATE TABLE IF NOT EXISTS tags (first_name VARCHAR(25), last_name VARCHAR(25), height TINYINT(150), weight SMALLINT, sex VARCHAR(25), tag VARCHAR (100), pic LONGBLOB)")			
+	cursor.execute("CREATE TABLE IF NOT EXISTS arkards.users (username VARCHAR(25), password VARCHAR(25))")
+	cursor.execute("CREATE TABLE IF NOT EXISTS arkards.tags (first_name VARCHAR(25), last_name VARCHAR(25), height TINYINT(150), weight SMALLINT, sex VARCHAR(25), tag VARCHAR (100), pic LONGBLOB)")			
 
 	# create default entry if we havent already
 	if not check_user_db("arkadmin","arkPASS9211"):
-		cursor.execute("INSERT INTO users (username, password) VALUES ('arkadmin', 'arkPASS9211');")
+		cursor.execute("INSERT INTO arkards.users (username, password) VALUES ('arkadmin', 'arkPASS9211');")
 
-	# close connections
+
+	# commit close connections
 	mydb.commit()
 	mydb.close()
 
 
-# this is the startup fuction called in the beginging to ensure the correct schema (db) and tables are created if they already do not exist.
-def start_db():
-
-	create_db()
-	create_tables()
-
 # this fuction searches the user tables to make sure a valid user is signin in
 def check_user_db(user, login_pass):
 
-	# connect to 
+	# connect to server
 	mydb = mysql.connector.connect(
-		host = "localhost",
-		user = "root",
-		password = "@rkARD$1921#",
-		database = "arkards"
+		host =  HOST_ID,
+		user = USER_ID,
+		password = PASSWORD_ID,
+		database = DATABASE_ID
 	)
 
 	# cursor instance
@@ -84,7 +68,7 @@ def check_user_db(user, login_pass):
 
 	# commit and close db connection
 	mydb.commit()
-	mydb. close()
+	mydb.close()
 	
 	# now if we have a match then we can let the user login, this is just a check and doesnt affect the next screen, mayeb can change in the future\
 	# return false if empty aka no match, other true aka match

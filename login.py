@@ -5,6 +5,7 @@
 # import modules
 from tkinter import *
 from database import *
+from menu import start_menu
 
 # fonts
 LARGE_FONT = ("Calibri", 24)
@@ -29,16 +30,28 @@ def start_login():
 		# base on if true or false either error or open the app
 		if connection:
 
-			message_label.config(text = "SUCESS!!!", fg = "green")
-			login_root.after(1000, login_root.destroy)
-
-			#open menu function
+			message_label.config(text = "SUCCESS!!!", fg = "green")
+			login_root.after(1000, lambda : success(user, password))
 
 		else:
 			message_label.config(text = "USERNAME/PASSWORD ERROR", fg = "red")
+			login_root.after(1000, clear_text)
+
+	# simple function for clearing text in the message field after error
+	def clear_text():
+		message_label.config(text = "")
+
+	# simple function for destroy the window and calling the menu 	
+	def success(user, password):
+		login_root.destroy()
+		start_menu(user, password)
 
 	# create root
 	login_root = Tk()
+
+	# set title of window and the icon
+	login_root.title("ARKARDS - LOGIN")
+	login_root.iconbitmap("icon.ico")
 
 	# set demintions for the window, also get the screen width and height for centering later
 	login_width = 600

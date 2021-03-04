@@ -13,6 +13,4 @@
 	- Default login information for MySQL 
 		> user: root
 		> password: @rkARD$1921#
-	- Deafult login for application
-		> user: arkadmin
-		> pass: arkPASS9211
+

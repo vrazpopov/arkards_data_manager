@@ -25,7 +25,7 @@ def start_login():
 		password = str(pass_entry.get())
 
 		# check the info agaisnt the user table in the db, return true or false
-		connection = check_user_db(user, password)
+		connection = start_db(user, password)
 
 		# base on if true or false either error or open the app
 		if connection:
@@ -55,7 +55,7 @@ def start_login():
 
 	# set demintions for the window, also get the screen width and height for centering later
 	login_width = 600
-	login_height = 360
+	login_height = 320
 	screen_width = login_root.winfo_screenwidth()
 	screen_height = login_root.winfo_screenheight()
 
@@ -74,7 +74,7 @@ def start_login():
 	button_frame = Frame(login_root)
 
 	# create labels
-	title_label = Label(login_root, text = "ARKARDS DATA MANGAGER LOGIN", font = LARGE_FONT, pady = 10)
+	title_label = Label(login_root, text = "ARKARDS DATA MANAGER LOGIN", font = LARGE_FONT, pady = 10)
 	user_label = Label(entry_frame, text = "Username: ", font = SMALL_FONT)
 	pass_label = Label(entry_frame, text = "Password: ", font = SMALL_FONT)
 	message_label = Label(login_root, text = "", font = SMALL_FONT)

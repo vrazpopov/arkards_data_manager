@@ -18,7 +18,6 @@ def start_menu(user, password):
 	#create the menu root
 	menu_root = Tk()
 
-
 	# set the title and icon
 	menu_root.title("ARKARDS - MENU")
 	menu_root.iconbitmap("icon.ico")

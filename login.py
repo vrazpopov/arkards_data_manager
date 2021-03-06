@@ -1,6 +1,10 @@
-# This screen is the first to prompt and will ask the user to give a username and password
-# From there it will check the MySQL database to ensure if it is a valid entry
-# If it is, it will allow entry to the program otherwise display an error
+#**********************************************************************************************
+#										LOGIN SCREEN
+#
+# This file contains the login screen, it accepts a user and password for the MYSQL DB
+# If the credentials are valid, create DB if not already and then go to main screen
+#**********************************************************************************************
+
 
 # import modules
 from tkinter import *
@@ -120,3 +124,7 @@ def start_login():
 
 	# window loop
 	login_root.mainloop()
+
+#**********************************************************************************************
+#						  		      END LOGIN SCREEN
+#**********************************************************************************************

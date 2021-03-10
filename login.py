@@ -3,6 +3,7 @@
 #
 # This file contains the login screen, it accepts a user and password for the MYSQL DB
 # If the credentials are valid, create DB if not already and then go to main screen
+# maybe in futre add the host as an entry box?
 #**********************************************************************************************
 
 

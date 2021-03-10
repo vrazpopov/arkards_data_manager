@@ -1,5 +1,5 @@
 # *************************************************************************************************
-#										COPY IMAGE
+#										FUNC IMAGE
 # The purpose of this file is to take the given image by the user, resize it and copy it to a known
 # directory. The will name the file based on the tag assigned to it, and will save the path on to
 # the DB. This is the peferred method to saving images (vs BLOB) to a DB since there are many 
@@ -39,6 +39,6 @@ def image_open(path, tag):
 	return new_file_name
 
 #******************************************************************************************************
-#										END COPY IMAGE
+#										END FUNC IMAGE
 #******************************************************************************************************
 

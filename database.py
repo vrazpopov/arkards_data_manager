@@ -6,6 +6,10 @@
 
 # import modules
 import mysql.connector
+import os
+from datetime import datetime 
+import subprocess
+
 
 # variables for connections, host is local in this case since on this machine, 
 HOST_ID = "localhost"
@@ -102,6 +106,58 @@ def check_tag(user_id, password_id, tag):
 
 		except mysql.connector.Error as err:
 			print(err)
+
+# this function is for clearing all the tags from the DB
+
+def clear_tags(user_id, password_id):
+
+	try:
+		# connect to mysql sever
+		mydb = mysql.connector.connect(
+		host = HOST_ID,
+		user = user_id,
+		password = password_id
+		)
+
+		# cursor instance
+		cursor = mydb.cursor()
+
+		# SQL query
+		query = "DELETE FROM arkards.tags"
+
+		# execute the command
+		cursor.execute(query)
+
+		# commit close connections
+		mydb.commit()
+		mydb.close()
+
+		return True
+
+	except mysql.connector.Error as err:
+		print(err)
+		return False
+
+
+# this function is for creating MySQL dump file to backup directory with timestamp
+
+def backup_db(user_id, password_id):
+
+	# variables for the time
+	time_now = datetime.now()
+	time_now_string = time_now.strftime("%m_%d_%Y - %H_%M_%S")
+
+	# check directory for backup
+	if not os.path.exists("Backup"):
+	    os.makedirs("Backup")
+
+	# create file name 
+	file_name = "Backup/" + time_now_string + ".sql"
+
+
+	# easiest way, is call call through cmd, shows warning about password, this can be ignored since it thinks the password is being entered.
+	with open(file_name, "w") as output:
+		c = subprocess.Popen(['C:/Program Files/MySQL/MySQL Server 8.0/bin/mysqldump', '-u',user_id,'-p%s'%password_id, 'arkards'], stdout= output, shell=True)
 
 
 # *************************************************************************************************

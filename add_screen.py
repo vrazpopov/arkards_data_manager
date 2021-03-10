@@ -10,7 +10,7 @@
 from tkinter import *
 from database import *
 from tkinter import filedialog
-from copy_image import *
+from func_image import *
 
 # fonts
 FONT_LARGE = ("Calibri", 24)
@@ -50,9 +50,10 @@ def start_add(root, user, password):
 			add_root.after(1000, clear_text)
 		
 		else:
-
+			# check to make sure the tag is not already added
 			duplicate = check_tag(user, password, tag_value)
 
+			# if the tag is not there then we will save the image, and attempt to add the tag
 			if not duplicate:				
 
 				# call the image function, copy image and get new path
@@ -63,15 +64,26 @@ def start_add(root, user, password):
 
 				if check :
 					message_label.config(text = "TAG SUCCESSFULLY ADDED!", fg = "green")
+					clear_entry()
 					add_root.after(1000, clear_text)
 				else:
 					message_label.config(text = "ERROR ADDING TAG!", fg = "red")
 					add_root.after(1000, clear_text)			
 
+			# if the tag is already added, error 
 			else:
 					message_label.config(text = "TAG ALREAY EXISTS!", fg = "red")
 					add_root.after(1000, clear_text)			
 
+	# simple function for clearing the entry fields
+	def clear_entry():
+		first_entry.delete(0, END)
+		last_entry.delete(0, END)
+		height_entry.delete(0, END)
+		weight_entry.delete(0, END)
+		sex_entry.delete(0, END)
+		tag_entry.delete(0, END)
+		image_label.config(text = "")
 
 	# create child window
 	add_root = Toplevel(root)
@@ -85,8 +97,8 @@ def start_add(root, user, password):
 	add_height = 700
 
 	# window width and height of the splash screen and screen
-	screen_width = root.winfo_screenwidth()
-	screen_height =root.winfo_screenheight()
+	screen_width = add_root.winfo_screenwidth()
+	screen_height =add_root.winfo_screenheight()
 
 	# x and y variables for centering the screen
 	x = (screen_width / 2) - (add_width / 2)

@@ -6,6 +6,8 @@
 from tkinter import *
 from database import *
 from add_screen import *
+from maintenance import *
+from view import *
 
 # fonts
 FONT_LARGE = ("Calibri", 24)
@@ -14,6 +16,19 @@ FONT_SMALL = ("Calibri", 12)
 
 
 def start_menu(user, password):
+
+	# if the add button is clicked open the child window for the add screen
+	def add_click():
+		start_add(menu_root, user, password)
+
+	# if the maintenance button is clicked open the child window for the maintenance screen
+	def gear_click():
+		start_maintenace(menu_root, user, password)
+
+	# if the view button is clicked open the child window for the view screen
+	def view_click():
+		start_view(menu_root, user, password)
+
 
 	#create the menu root
 	menu_root = Tk()
@@ -35,12 +50,6 @@ def start_menu(user, password):
 	# now set the geometry of the screen and center it
 	menu_root.geometry(f'{menu_width}x{menu_height}+{int(x)}+{int(y)}')
 
-	# button function
-
-	def add_click():
-		start_add(menu_root, user, password)
-
-
 	# load the images
 	logo_image = PhotoImage(file = "images/logo.png")
 	add_image = PhotoImage(file = "images/add.png")
@@ -52,16 +61,15 @@ def start_menu(user, password):
 	title_frame = Frame(menu_root)
 	button_frame = Frame(menu_root)
 
-	user_text = "Logged in: " + user
 	# labels
 	logo_label = Label(title_frame, image = logo_image, padx = 10, pady = 10)
 	title_label = Label(title_frame,  text = "ARKARDS - Data Manager", font = FONT_LARGE, padx = 10, pady = 10)
-	user_label = Label(menu_root, text = user_text, font = FONT_MEDIUM, pady = 10)
+
 
 	# buttons
 	add_button = Button(button_frame, image = add_image, width = 175, height = 175, bd = 10, text = "Add Tag", font = FONT_LARGE, compound = "top", command = add_click)
-	view_button = Button(button_frame, image = view_image, width = 175, height = 175, bd = 10, text = "View Tags", font = FONT_LARGE, compound = "top")
-	gear_button = Button(button_frame, image = gear_image, width = 175, height = 175,  bd = 10, text = "Maintenance", font = FONT_LARGE, compound = "top")
+	view_button = Button(button_frame, image = view_image, width = 175, height = 175, bd = 10, text = "View Tags", font = FONT_LARGE, compound = "top", command = view_click)
+	gear_button = Button(button_frame, image = gear_image, width = 175, height = 175,  bd = 10, text = "Maintenance", font = FONT_LARGE, compound = "top", command = gear_click)
 	exit_button = Button(button_frame, image = exit_image, width = 175, height = 175,  bd = 10, text = "Exit", font = FONT_LARGE, compound = "top", command = menu_root.destroy)
 
 	# place the labels into the frame
@@ -77,9 +85,6 @@ def start_menu(user, password):
 	# pack the frame onto the screen
 	title_frame.pack()
 	button_frame.pack()
-
-	# pack the user label
-	user_label.pack()
 
 	# main loop
 	menu_root.mainloop()

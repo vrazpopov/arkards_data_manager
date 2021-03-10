@@ -5,4 +5,5 @@ from database import start_db
 from menu import start_menu
 
 #start_login()
-start_menu("root", "@rkARD$1921#") # do this so i dont have to enter the damn login everytime I want to test something 
+# do this so i dont have to enter the damn login everytime I want to test something 
+start_menu("root", "@rkARD$1921#") 

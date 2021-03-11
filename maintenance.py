@@ -9,6 +9,7 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter import simpledialog
 from database import *
+from func_image import *
 
 
 # fonts
@@ -18,8 +19,6 @@ FONT_SMALL = ("Calibri", 12)
 
 
 def start_maintenace(root, user, password):
-
-	# button functions
 
 	# hide the parent
 	root.withdraw()
@@ -40,6 +39,7 @@ def start_maintenace(root, user, password):
 		    	
 		    	# if clear is works
 		    	if check:
+		    		image_clear()
 		    		message_label.config(text = "CLEARING TAGS...", fg = "green")
 		    		admin_root.after(1500, clear_text)
 
@@ -142,6 +142,74 @@ def start_maintenace(root, user, password):
 	# main loop
 	admin_root.mainloop()
 
+
+
+def users_window(root, user, password):
+
+	# hide the parent
+	root.withdraw()
+
+	#create the admin root
+	user_root = Toplevel(root)
+	# set the title and icon
+	user_root.title("ARKARDS - USERS")
+	user_root.iconbitmap("icon.ico")
+
+	# set demintions for the window, also get the screen width and height for centering later
+	user_width = 1200
+	user_height = 720
+	screen_width = user_root.winfo_screenwidth()
+	screen_height = user_root.winfo_screenheight()
+
+	# x and y variables for then placing the window onto the middle of the screen.
+	x = (screen_width / 2) - (user_width / 2)
+	y = (screen_height / 2) - (user_height / 2)
+
+	# now set the geometry of the screen and center it
+	user_root.geometry(f'{user_width}x{user_height}+{int(x)}+{int(y)}')
+
+	# incase window is force closed
+	user_root.bind("<Destroy>", lambda e: root.deiconify())
+
+	# load the images
+	add_image = PhotoImage(file = "images/add_user.png")
+	delete_image =  PhotoImage(file = "images/delete.png")
+	gear_image =  PhotoImage(file = "images/gear.png")	
+
+	# frame
+	button_frame = Frame(user_root)
+
+	# labels
+	message_label = Label(user_root, text = "", font = FONT_MEDIUM, pady = 10)
+
+	# buttons
+	delete_button = Button(button_frame, image = clear_image, width = 175, height = 175, bd = 10, text = "Delete User", font = FONT_LARGE, compound = "top", command = clear_click)
+	add_button = Button(button_frame, image = add_image, width = 175, height = 175,  bd = 10, text = "Add User", font = FONT_LARGE, compound = "top", command = add_click)
+	gear_button = Button(button_frame, image = gear_image, width = 175, height = 175,  bd = 10, text = "Maintenance", font = FONT_LARGE, compound = "top", command = home_click)
+
+	# place the labels into the frame
+	logo_label.grid(row = 0, column = 0)
+	title_label.grid(row = 0, column = 1)
+
+
+    # place buttons
+	clear_button.grid(row = 0, column = 0, padx = 50, pady = 20)
+	backup_button.grid(row = 0, column = 1, padx = 50, pady = 20)
+	add_button.grid(row = 1, column = 0, padx = 50, pady = 20)
+	home_button.grid(row = 1, column = 1, padx = 50, pady = 20)
+
+	# pack the frame onto the screen
+	title_frame.pack()
+	button_frame.pack()
+
+	# pack the user and message label
+	user_label.pack()
+	message_label.pack()
+
+	# main loop
+	user_root.mainloop()
+
+
 # fucnction for calling child window 
 def child_add(root, user, password):
 
@@ -155,10 +223,19 @@ def child_add(root, user, password):
 		
 		if pass_value == check_pass_value:
 
-			message_label.config(text = "CREATING USER...", fg = "green")
-			clear_entry()
-			child_root.after(1500, clear_text)
-			user_entry.focus_force()
+			user_check = add_user(user, password, user_value, pass_value)
+
+			if user_check:
+
+				message_label.config(text = "CREATING USER...", fg = "green")
+				clear_entry()
+				child_root.after(1500, clear_text)
+				user_entry.focus_force()
+
+			else:
+
+				message_label.config(text = "ERROR CREATING USER", fg = "red")
+				child_root.after(1500, clear_text)
 
 		# if passwords do not match error
 		else:
@@ -257,32 +334,6 @@ def child_add(root, user, password):
 	check_pass_entry.bind("<Return>", lambda e: add_click())		
 
 	child_root.mainloop()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

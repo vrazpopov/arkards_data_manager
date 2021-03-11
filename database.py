@@ -160,6 +160,94 @@ def backup_db(user_id, password_id):
 		c = subprocess.Popen(['C:/Program Files/MySQL/MySQL Server 8.0/bin/mysqldump', '-u',user_id,'-p%s'%password_id, 'arkards'], stdout= output, shell=True)
 
 
+# function to add new user, first we must create then grant privelages
+def add_user(user_id, password_id, new_user, new_password):
+
+	user_check = create_user(user_id, password_id, new_user, new_password)
+
+	if user_check:
+
+		priv_check = new_user_priv(user_id, password_id, new_user, new_password)
+
+		if priv_check:
+
+			return True
+
+		else:
+
+			return False
+	else:
+
+		return False
+
+# function for creating user, returns true if succesful
+def create_user(user_id, password_id, new_user, new_password):
+
+	try:
+		# connect to mysql sever
+		mydb = mysql.connector.connect(
+		host = HOST_ID,
+		user = user_id,
+		password = password_id
+		)
+
+		# cursor instance
+		cursor = mydb.cursor()
+
+		# SQL query
+		query = "CREATE USER %s@%s IDENTIFIED BY %s"
+
+		#data tuple
+		data = (new_user, HOST_ID, new_password)
+
+		# execute the command
+		cursor.execute(query, data)
+
+		# commit close connections
+		mydb.commit()
+		mydb.close()
+
+		return True
+
+	except mysql.connector.Error as err:
+		print(err)
+		return False
+
+# function for granting privelgage, returns ture if succesful
+def new_user_priv(user_id, password_id, new_user, new_password):
+
+
+	try:
+		# connect to mysql sever
+		mydb = mysql.connector.connect(
+		host = HOST_ID,
+		user = user_id,
+		password = password_id
+		)
+
+		# cursor instance
+		cursor = mydb.cursor()
+
+		# SQL query
+		query = "GRANT ALL PRIVILEGES ON *.* TO %s@%s"
+
+		#data tuple
+		data = (new_user, HOST_ID)
+
+		# execute the command
+		cursor.execute(query, data)
+
+		# commit close connections
+		mydb.commit()
+		mydb.close()
+
+		return True
+
+	except mysql.connector.Error as err:
+		print(err)
+		return False	
+
+
 # *************************************************************************************************
 #										END DATBASE FILE 
 #**************************************************************************************************

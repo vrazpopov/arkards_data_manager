@@ -38,6 +38,16 @@ def image_open(path, tag):
 	# return the new file path name so we can save it to the DB
 	return new_file_name
 
+# function for clearing all the images
+def image_clear():
+
+	try:
+		for file in os.scandir("Tag Images/"):
+			os.remove(file.path)
+
+	except:
+		pass
+
 #******************************************************************************************************
 #										END FUNC IMAGE
 #******************************************************************************************************

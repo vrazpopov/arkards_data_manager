@@ -9,6 +9,7 @@ import mysql.connector
 import os
 from datetime import datetime 
 import subprocess
+import pandas as pd
 
 
 # variables for connections, host is local in this case since on this machine, 
@@ -38,7 +39,9 @@ def start_db(user_id, password_id):
 		mydb.close()
 
 		return True
+
 	except mysql.connector.Error as err:
+
 		print(err)
 		return False
 
@@ -70,7 +73,9 @@ def add_tag(user_id, password_id, tag, first_name, last_name, height, weight, se
 			mydb.close()
 
 			return True
+
 		except mysql.connector.Error as err:
+			
 			print(err)
 			return False
 
@@ -100,11 +105,14 @@ def check_tag(user_id, password_id, tag):
 			mydb.close()
 
 			if not row:
+
 				return False
 			else:
+
 				return True
 
 		except mysql.connector.Error as err:
+
 			print(err)
 
 # this function is for clearing all the tags from the DB
@@ -135,6 +143,7 @@ def clear_tags(user_id, password_id):
 		return True
 
 	except mysql.connector.Error as err:
+
 		print(err)
 		return False
 
@@ -244,8 +253,76 @@ def new_user_priv(user_id, password_id, new_user, new_password):
 		return True
 
 	except mysql.connector.Error as err:
+		
 		print(err)
 		return False	
+
+
+# function for getting the users
+def get_users(user_id, password_id):
+
+		# connect to mysql sever
+		mydb = mysql.connector.connect(
+		host = HOST_ID,
+		user = user_id,
+		password = password_id
+		)
+
+		# cursor instance
+		cursor = mydb.cursor()
+
+		# SQL query
+		query = "SELECT user from mysql.user WHERE user NOT LIKE 'mysql%'"
+		df = pd.read_sql(query, mydb)
+
+		# execute the command
+		cursor.execute(query)
+
+		# fetch all the user records
+		sql_users = cursor.fetchall()
+
+		final = pd.DataFrame(sql_users, columns = df.columns)
+
+		# commit close connections
+		mydb.commit()
+		mydb.close()
+
+		return final
+
+# function for dropping a user
+def drop_user(user_id, password_id, user_drop):
+
+	try:
+		# connect to mysql sever
+		mydb = mysql.connector.connect(
+		host = HOST_ID,
+		user = user_id,
+		password = password_id
+		)
+
+		# cursor instance
+		cursor = mydb.cursor()
+
+		# SQL query
+		query = "DROP USER %s@%s"
+
+		#data tuple
+		data = (user_drop, HOST_ID)
+
+		# execute the command
+		cursor.execute(query, data)
+
+		# commit close connections
+		mydb.commit()
+		mydb.close()
+
+		return True
+
+	except mysql.connector.Error as err:
+		
+		print(err)
+		return False	
+
 
 
 # *************************************************************************************************

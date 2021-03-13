@@ -10,6 +10,8 @@ from tkinter import messagebox
 from tkinter import simpledialog
 from database import *
 from func_image import *
+import pandas as pd
+from pandastable import Table
 
 
 # fonts
@@ -66,7 +68,7 @@ def start_maintenace(root, user, password):
 
 	# function clicking add, creates child window
 	def add_click():
-		child_add(admin_root, user, password)
+		users_window(admin_root, user, password)
 
 
 	# simple function for clearing text
@@ -143,21 +145,51 @@ def start_maintenace(root, user, password):
 	admin_root.mainloop()
 
 
-
 def users_window(root, user, password):
+
+	# function for adding user, call child window
+	def add_click():
+
+		child_add(user_root, user, password, pt)
+	
+	# function for deleteing a selected user, will make it so foot can not be deleted.
+	def delete_click():
+
+		row = pt.getSelectedRow()
+		user_selected = pt.model.getValueAt(row, 0)
+
+		if user_selected == "root":
+
+			messagebox.showerror("ERROR!","ERROR: CAN NOT DELETE ROOT!")
+
+		else:
+
+			check = drop_user(user, password, user_selected)
+
+			if not check:
+
+				messagebox.showerror("ERROR!","ERROR CREATING USER")
+
+			else:
+
+				new_data = get_users(user, password)
+				pt.model.df = new_data
+				pt.redraw()
+
 
 	# hide the parent
 	root.withdraw()
 
 	#create the admin root
 	user_root = Toplevel(root)
+
 	# set the title and icon
 	user_root.title("ARKARDS - USERS")
 	user_root.iconbitmap("icon.ico")
 
 	# set demintions for the window, also get the screen width and height for centering later
-	user_width = 1200
-	user_height = 720
+	user_width = 900
+	user_height = 900
 	screen_width = user_root.winfo_screenwidth()
 	screen_height = user_root.winfo_screenheight()
 
@@ -179,39 +211,35 @@ def users_window(root, user, password):
 	# frame
 	button_frame = Frame(user_root)
 
-	# labels
-	message_label = Label(user_root, text = "", font = FONT_MEDIUM, pady = 10)
-
 	# buttons
-	delete_button = Button(button_frame, image = clear_image, width = 175, height = 175, bd = 10, text = "Delete User", font = FONT_LARGE, compound = "top", command = clear_click)
+	delete_button = Button(button_frame, image = delete_image, width = 175, height = 175, bd = 10, text = "Delete User", font = FONT_LARGE, compound = "top", command = delete_click)
 	add_button = Button(button_frame, image = add_image, width = 175, height = 175,  bd = 10, text = "Add User", font = FONT_LARGE, compound = "top", command = add_click)
-	gear_button = Button(button_frame, image = gear_image, width = 175, height = 175,  bd = 10, text = "Maintenance", font = FONT_LARGE, compound = "top", command = home_click)
-
-	# place the labels into the frame
-	logo_label.grid(row = 0, column = 0)
-	title_label.grid(row = 0, column = 1)
+	gear_button = Button(button_frame, image = gear_image, width = 175, height = 175,  bd = 10, text = "Maintenance", font = FONT_LARGE, compound = "top", command = user_root.destroy)
 
 
     # place buttons
-	clear_button.grid(row = 0, column = 0, padx = 50, pady = 20)
-	backup_button.grid(row = 0, column = 1, padx = 50, pady = 20)
-	add_button.grid(row = 1, column = 0, padx = 50, pady = 20)
-	home_button.grid(row = 1, column = 1, padx = 50, pady = 20)
+	add_button.grid(row = 0, column = 0, padx = 50, pady = 20)
+	delete_button.grid(row = 1, column = 0, padx = 50, pady = 20)
+	gear_button.grid(row = 2, column = 0, padx = 50, pady = 20)
 
-	# pack the frame onto the screen
-	title_frame.pack()
-	button_frame.pack()
+	table_frame = Frame(user_root)
+	table_frame.pack(side = LEFT, fill = "both", expand = True)
 
-	# pack the user and message label
-	user_label.pack()
-	message_label.pack()
+	# pack button frame
+	button_frame.pack(side =LEFT)
+
+	# pandastable
+	pt = Table(table_frame)
+	data_frame = get_users(user, password)
+	pt.model.df = data_frame
+	pt.show()
 
 	# main loop
 	user_root.mainloop()
 
 
 # fucnction for calling child window 
-def child_add(root, user, password):
+def child_add(root, user, password, pt):
 
 	# function for clicking the create button, checks passwords to make sure they match, then calls db funciton
 	def add_click():
@@ -231,6 +259,9 @@ def child_add(root, user, password):
 				clear_entry()
 				child_root.after(1500, clear_text)
 				user_entry.focus_force()
+				new_data = get_users(user, password)
+				pt.model.df = new_data
+				pt.redraw()
 
 			else:
 
@@ -326,12 +357,15 @@ def child_add(root, user, password):
 
 	# if enter is pressed then focus on the password entry
 	user_entry.bind("<Return>", lambda e: pass_entry.focus_set())
+	user_entry.bind("<Tab>", lambda e: pass_entry.focus_set())
 
 	# if enter is pressed then focus on the password entry
-	pass_entry.bind("<Return>", lambda e: check_pass_entry.focus_set())  
+	pass_entry.bind("<Return>", lambda e: check_pass_entry.focus_set()) 
+	pass_entry.bind("<Tab>", lambda e: check_pass_entry.focus_set()) 
 
 	#if enter is pressed same as clicking login button
-	check_pass_entry.bind("<Return>", lambda e: add_click())		
+	check_pass_entry.bind("<Return>", lambda e: add_click())
+	check_pass_entry.bind("<Tab>", lambda e: user_entry.focus_set())		
 
 	child_root.mainloop()
 

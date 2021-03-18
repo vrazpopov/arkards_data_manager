@@ -48,6 +48,12 @@ def image_clear():
 	except:
 		pass
 
+
+# function for viewing the picture
+def image_view(path):
+
+	return ImageTk.PhotoImage(Image.open(path))
+
 #******************************************************************************************************
 #										END FUNC IMAGE
 #******************************************************************************************************

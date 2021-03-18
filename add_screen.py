@@ -171,6 +171,25 @@ def start_add(root, user, password):
 	button_frame.pack()
 	message_label.pack()
 
+	# if enter or tab is pressed change focus
+	tag_entry.bind("<Return>", lambda e: first_entry.focus_set())
+	tag_entry.bind("<Tab>", lambda e: first_entry.focus_set())
+
+	first_entry.bind("<Return>", lambda e: last_entry.focus_set())
+	first_entry.bind("<Tab>", lambda e: last_entry.focus_set())	
+
+	last_entry.bind("<Return>", lambda e: height_entry.focus_set())
+	last_entry.bind("<Tab>", lambda e: height_entry.focus_set())	
+
+	height_entry.bind("<Return>", lambda e: weight_entry.focus_set())
+	height_entry.bind("<Tab>", lambda e: weight_entry.focus_set())
+
+	weight_entry.bind("<Return>", lambda e: sex_entry.focus_set())
+	weight_entry.bind("<Tab>", lambda e: sex_entry.focus_set())		
+
+	sex_entry.bind("<Return>", lambda e: tag_entry.focus_set())
+	sex_entry.bind("<Tab>", lambda e: tag_entry.focus_set())	
+
 	add_root.mainloop()
 
 

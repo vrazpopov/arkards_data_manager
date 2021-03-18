@@ -200,6 +200,8 @@ def create_user(user_id, password_id, new_user, new_password):
 		password = password_id
 		)
 
+		print(password_id)
+
 		# cursor instance
 		cursor = mydb.cursor()
 
@@ -323,7 +325,70 @@ def drop_user(user_id, password_id, user_drop):
 		print(err)
 		return False	
 
+# function for getting the users
+def get_tags(user_id, password_id):
 
+		# connect to mysql sever
+		mydb = mysql.connector.connect(
+		host = HOST_ID,
+		user = user_id,
+		password = password_id
+		)
+
+		# cursor instance
+		cursor = mydb.cursor()
+
+		# SQL query
+		query = "SELECT * from arkards.tags"
+		df = pd.read_sql(query, mydb)
+
+		# execute the command
+		cursor.execute(query)
+
+		# fetch all the user records
+		tags = cursor.fetchall()
+
+		final = pd.DataFrame(tags, columns = df.columns)
+
+		# commit close connections
+		mydb.commit()
+		mydb.close()
+
+		return final
+
+# function for dropping a user
+def drop_tag(user_id, password_id, tag_drop):
+
+	try:
+		# connect to mysql sever
+		mydb = mysql.connector.connect(
+		host = HOST_ID,
+		user = user_id,
+		password = password_id
+		)
+
+		# cursor instance
+		cursor = mydb.cursor()
+
+		# SQL query
+		query = "DELETE FROM arkards.tags WHERE tag = %s"
+
+		#data tuple
+		data = (tag_drop,)
+
+		# execute the command
+		cursor.execute(query, data)
+
+		# commit close connections
+		mydb.commit()
+		mydb.close()
+
+		return True
+
+	except mysql.connector.Error as err:
+		
+		print(err)
+		return False	
 
 # *************************************************************************************************
 #										END DATBASE FILE 

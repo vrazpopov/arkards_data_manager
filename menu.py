@@ -30,6 +30,7 @@ def start_menu(user, password):
 		start_view(menu_root, user, password)
 
 
+
 	#create the menu root
 	menu_root = Tk()
 

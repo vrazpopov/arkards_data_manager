@@ -99,7 +99,7 @@ def start_maintenace(root, user, password):
 
 	# load the images
 	logo_image = PhotoImage(file = "images/logo.png")
-	add_image = PhotoImage(file = "images/add_user.png")
+	add_image = PhotoImage(file = "images/users.png")
 	clear_image =  PhotoImage(file = "images/clear.png")
 	backup_image =  PhotoImage(file = "images/backup.png")
 	home_image =  PhotoImage(file = "images/home.png")	
@@ -119,7 +119,7 @@ def start_maintenace(root, user, password):
 	# buttons
 	clear_button = Button(button_frame, image = clear_image, width = 175, height = 175, bd = 10, text = "Clear Tags", font = FONT_LARGE, compound = "top", command = clear_click)
 	backup_button = Button(button_frame, image = backup_image, width = 175, height = 175, bd = 10, text = "Backup Tags", font = FONT_LARGE, compound = "top", command = backup_click)
-	add_button = Button(button_frame, image = add_image, width = 175, height = 175,  bd = 10, text = "Add User", font = FONT_LARGE, compound = "top", command = add_click)
+	add_button = Button(button_frame, image = add_image, width = 175, height = 175,  bd = 10, text = "Users", font = FONT_LARGE, compound = "top", command = add_click)
 	home_button = Button(button_frame, image = home_image, width = 175, height = 175,  bd = 10, text = "Main Screen", font = FONT_LARGE, compound = "top", command = home_click)
 
 	# place the labels into the frame
@@ -141,6 +141,7 @@ def start_maintenace(root, user, password):
 	user_label.pack()
 	message_label.pack()
 
+
 	# main loop
 	admin_root.mainloop()
 
@@ -155,26 +156,34 @@ def users_window(root, user, password):
 	# function for deleteing a selected user, will make it so foot can not be deleted.
 	def delete_click():
 
-		row = pt.getSelectedRow()
-		user_selected = pt.model.getValueAt(row, 0)
+		try:
 
-		if user_selected == "root":
+			row = pt.getSelectedRow()
+			user_selected = pt.model.getValueAt(row, 0)
 
-			messagebox.showerror("ERROR!","ERROR: CAN NOT DELETE ROOT!")
+			response = messagebox.askyesno("WARNING!","DO YOU WISH TO DELETE THIS USER?")
 
-		else:
+			if response == 1:
 
-			check = drop_user(user, password, user_selected)
+				if user_selected == "root":
 
-			if not check:
+					messagebox.showerror("ERROR!","ERROR: CAN NOT DELETE ROOT!")
 
-				messagebox.showerror("ERROR!","ERROR CREATING USER")
+				else:
 
-			else:
+					check = drop_user(user, password, user_selected)
 
-				new_data = get_users(user, password)
-				pt.model.df = new_data
-				pt.redraw()
+					if not check:
+
+						messagebox.showerror("ERROR!","ERROR CREATING USER")
+
+					else:
+
+						new_data = get_users(user, password)
+						pt.model.df = new_data
+						pt.redraw()
+		except IndexError as err:
+			print(err)
 
 
 	# hide the parent
@@ -233,6 +242,19 @@ def users_window(root, user, password):
 	data_frame = get_users(user, password)
 	pt.model.df = data_frame
 	pt.show()
+
+	pt.unbind_all("<Tab>")
+	pt.unbind_all("<Return>")
+
+	# if user is not root then lock the add/remove users 
+	if user == "root":
+		add_button.config(state = NORMAL)
+		delete_button.config(state = NORMAL)
+
+	else:
+		add_button.config(state = DISABLED)
+		delete_button.config(state = DISABLED)
+		
 
 	# main loop
 	user_root.mainloop()

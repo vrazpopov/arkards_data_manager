@@ -5,7 +5,11 @@
 #**********************************************************************************************
 
 from tkinter import *
+from tkinter import messagebox
 from database import *
+from func_image import *
+import pandas as pd
+from pandastable import Table
 
 # fonts
 FONT_LARGE = ("Calibri", 24)
@@ -14,6 +18,76 @@ FONT_SMALL = ("Calibri", 12)
 
 
 def start_view(root, user, password):
+
+	def delete_click():
+
+		try:
+
+			row = pt.getSelectedRow()
+			tag_selected = pt.model.getValueAt(row, 0)
+
+			response = messagebox.askyesno("WARNING!","DO YOU WISH TO DELETE THIS TAG?")
+
+			if response == 1:
+
+				check = drop_tag(user, password, tag_selected)
+
+				if not check:
+
+					messagebox.showerror("ERROR!","ERROR DELETING TAG")
+
+				else:
+
+					new_data = get_tags(user, password)
+					pt.model.df = new_data
+					pt.redraw()
+		except IndexError as err:
+			print(err)
+
+	def view_click():
+
+		try:
+
+			row = pt.getSelectedRow()
+			path_selected = pt.model.getValueAt(row, 6)
+
+			# create root
+			child_root = Toplevel(view_root)
+
+			# set title of window and the icon
+			child_root.title("ARKARDS - " + str(path_selected))
+			child_root.iconbitmap("icon.ico")
+
+			# set demintions for the window, also get the screen width and height for centering later
+			child_width = 256
+			child_height = 256
+			screen_width = child_root.winfo_screenwidth()
+			screen_height = child_root.winfo_screenheight()
+
+			# x and y variables for then placing the window onto the middle of the screen.
+			x = (screen_width / 2) - (child_width / 2)
+			y = (screen_height / 2) - (child_height / 2)
+
+			# now set the geometry of the screen and center it
+			child_root.geometry(f'{child_width}x{child_height}+{int(x)}+{int(y)}')
+
+			# make the window a fixed size
+			child_root.resizable(0,0)
+
+			img = image_view(path_selected)
+
+			image_label = Label(child_root, image = img)
+
+			image_label.pack(expand = True)
+
+			child_root.mainloop()
+
+		except IndexError as err:
+			print(err)
+
+
+	# hide the parent window
+	root.withdraw()
 
 	#create the view root
 	view_root = Toplevel(root)
@@ -34,40 +108,43 @@ def start_view(root, user, password):
 	# now set the geometry of the screen and center it
 	view_root.geometry(f'{view_width}x{view_height}+{int(x)}+{int(y)}')
 
-	# load the images
-	logo_image = PhotoImage(file = "images/logo.png")
-	add_image = PhotoImage(file = "images/add.png")
-	view_image =  PhotoImage(file = "images/view.png")
-	gear_image =  PhotoImage(file = "images/gear.png")
+	# incase window is force closed
+	view_root.bind("<Destroy>", lambda e: root.deiconify())
+
+# load the images
+	view_image = PhotoImage(file = "images/magnify.png")
+	delete_image =  PhotoImage(file = "images/delete.png")
 	home_image =  PhotoImage(file = "images/home.png")	
 
-	# frameS
-	title_frame = Frame(view_root)
+	# frame
 	button_frame = Frame(view_root)
 
-	# labels
-	logo_label = Label(title_frame, image = logo_image, padx = 10, pady = 10)
-	title_label = Label(title_frame,  text = "ARKARDS - Maintenance", font = FONT_LARGE, padx = 10, pady = 10)
-
 	# buttons
-	add_button = Button(button_frame, image = add_image, width = 175, height = 175, bd = 10, text = "Add Tag", font = FONT_LARGE, compound = "top")
-	view_button = Button(button_frame, image = view_image, width = 175, height = 175, bd = 10, text = "View Tags", font = FONT_LARGE, compound = "top")
-	gear_button = Button(button_frame, image = gear_image, width = 175, height = 175,  bd = 10, text = "Maintenance", font = FONT_LARGE, compound = "top")
+	delete_button = Button(button_frame, image = delete_image, width = 175, height = 175, bd = 10, text = "Delete Tag", font = FONT_LARGE, compound = "top", command = delete_click)
+	view_button = Button(button_frame, image = view_image, width = 175, height = 175,  bd = 10, text = "View Tag", font = FONT_LARGE, compound = "top", command = view_click)
 	home_button = Button(button_frame, image = home_image, width = 175, height = 175,  bd = 10, text = "Main Screen", font = FONT_LARGE, compound = "top", command = view_root.destroy)
 
-	# place the labels into the frame
-	logo_label.grid(row = 0, column = 0)
-	title_label.grid(row = 0, column = 1)
 
     # place buttons
-	add_button.grid(row = 0, column = 0, padx = 50, pady = 20)
-	view_button.grid(row = 0, column = 1, padx = 50, pady = 20)
-	gear_button.grid(row = 1, column = 0, padx = 50, pady = 20)
-	home_button.grid(row = 1, column = 1, padx = 50, pady = 20)
+	view_button.grid(row = 0, column = 0, padx = 50, pady = 20)
+	delete_button.grid(row = 0, column = 1, padx = 50, pady = 20)
+	home_button.grid(row = 0, column = 2, padx = 50, pady = 20)
 
-	# pack the frame onto the screen
-	title_frame.pack()
+	table_frame = Frame(view_root)
+	table_frame.pack(fill = "both", expand = True)
+
+	# pack button frame
 	button_frame.pack()
+
+	# pandastable
+	pt = Table(table_frame)
+	data_frame = get_tags(user, password)
+	pt.model.df = data_frame
+	pt.show()
+
+	pt.unbind_all("<Tab>")
+	pt.unbind_all("<Return>")
+
 
 	# main loop
 	view_root.mainloop()

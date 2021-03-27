@@ -16,9 +16,10 @@ FONT_LARGE = ("Calibri", 24)
 FONT_MEDIUM = ("Calibri", 16)
 FONT_SMALL = ("Calibri", 12)
 
-
+# start the view screen
 def start_view(root, user, password):
 
+	# function for deleting an entry
 	def delete_click():
 
 		try:
@@ -44,6 +45,7 @@ def start_view(root, user, password):
 		except IndexError as err:
 			print(err)
 
+	# function for viewing the picture
 	def view_click():
 
 		try:
@@ -111,7 +113,7 @@ def start_view(root, user, password):
 	# incase window is force closed
 	view_root.bind("<Destroy>", lambda e: root.deiconify())
 
-# load the images
+	# load the images
 	view_image = PhotoImage(file = "images/magnify.png")
 	delete_image =  PhotoImage(file = "images/delete.png")
 	home_image =  PhotoImage(file = "images/home.png")	
@@ -148,9 +150,6 @@ def start_view(root, user, password):
 
 	# main loop
 	view_root.mainloop()
-
-
-
 
 
 

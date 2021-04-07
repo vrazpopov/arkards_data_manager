@@ -19,6 +19,7 @@ def on_connect(client, userdata, flags, rc):
         print("Connected OK")
     else:
         print("Bad Connection, ERROR = " + rc)
+     
 
 # function for pressing 1) on the menue
 def start_login(client):
@@ -40,14 +41,25 @@ def start_login(client):
 	print("Publishing...\n")
 
 # function for pressing 2) on the menue
-def start_tag():
-	pass
+def start_tag(client):
+	# print the heading
+	print("\n******TAG SCREEN******\n")
+
+	# get user name and password
+	tag = input("Enter Tag: ")
+
+	# publish message
+	client.publish("ark/login", tag)
+
+    #print that it is beeing added
+	print("Publishing...\n")
+
 
 # fuction for starting the connection and prompting user options
 def start():
 	#broker to connect to
 	broker = "test.mosquitto.org"
-	client = mqtt.Client("arkards")
+	client = mqtt.Client("arkards_holo")
 
     # set the callback fucntions for connection and log
 	client.on_connect = on_connect
@@ -82,7 +94,7 @@ def start():
 			start_login(client)
 		#if user pressed two then simulated the tag function
 		elif mode == "2":
-			break
+			start_tag(client)
 		# if user presses three then stop loop disconnect and exit application
 		elif mode == "3":
 			print("EXITING...")

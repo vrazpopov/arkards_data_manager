@@ -1,7 +1,7 @@
 #**********************************************************************************************
 #										MAINTENANCE SCREEN
 #
-#		 The purpose of this file is to for the maintenance screen, handle functions like 
+#		 The purpose of this file is to for the maintenance screen, handle functions like
 #		adding users, and clearing the tags out, etc.
 #**********************************************************************************************
 
@@ -28,39 +28,45 @@ def start_maintenace(root, user, password):
 	# warn user, that db will be cleared, then prompt for password if they want to continue
 	def clear_click():
 
-		response = messagebox.askyesno("WARNING!","THIS WILL CLEAR TAGS, DO YOU WANT TO CONTINUE?")
-		# yes is selected ask for password, used simple dialog for simplicity cant figure out how to center, who cares...
-		if response == 1:
+			#disable the buttons
+			button_disable()
 
-			# now check the password 
-		    answer = simpledialog.askstring("Password", "Enter Password for : " + str(user), parent = admin_root, show = '*')
-		    
-		    #if the password is correct clear tags
-		    if answer == password:
-		    	check = clear_tags(user, password)
-		    	
-		    	# if clear is works
-		    	if check:
-		    		image_clear()
-		    		message_label.config(text = "CLEARING TAGS...", fg = "green")
-		    		admin_root.after(1500, clear_text)
+			response = messagebox.askyesno("WARNING!","THIS WILL CLEAR TAGS, DO YOU WANT TO CONTINUE?")
+			# yes is selected ask for password, used simple dialog for simplicity cant figure out how to center, who cares...
+			if response == 1:
 
-		    	else:
-		    		message_label.config(text = "ERROR CLEARING TAGS...", fg = "red")
-		    		admin_root.after(1500, clear_text)
+				# now check the password
+				answer = simpledialog.askstring("Password", "Enter Password for : " + str(user), parent = admin_root, show = '*')
 
-		    # othwerwise error
-		    else:
-		    	messagebox.showerror("ERROR!","INCORRECT PASSWORD!")
+				#if the password is correct clear tags
+				if answer == password:
+					check = clear_tags(user, password)
 
-		    admin_root.focus_force()
+					# if clear is works
+					if check:
+						image_clear()
+						message_label.config(text = "CLEARING TAGS...", fg = "green")
+						admin_root.after(1500, clear_text)
+
+					else:
+						message_label.config(text = "ERROR CLEARING TAGS...", fg = "red")
+						admin_root.after(1500, clear_text)
+
+				# othwerwise error
+				else:
+					button_normal()
+					messagebox.showerror("ERROR!","INCORRECT PASSWORD!")
+					
+			button_normal()
+
+			admin_root.focus_force()
 
 	# unhide parent and close
 	def home_click():
 		root.deiconify()
 		admin_root.destroy()
 
-	# function for clicking backup, calls db function 
+	# function for clicking backup, calls db function
 	def backup_click():
 		backup_db(user, password)
 		message_label.config(text = "CREATING BACKUP...", fg = "green")
@@ -73,7 +79,20 @@ def start_maintenace(root, user, password):
 
 	# simple function for clearing text
 	def clear_text():
+		button_normal()
 		message_label.config(text = "")
+
+	def button_disable():
+		clear_button.config(state = DISABLED)
+		backup_button.config(state = DISABLED)
+		add_button.config(state = DISABLED)
+		home_button.config(state = DISABLED)
+
+	def button_normal():
+		clear_button.config(state = NORMAL)
+		backup_button.config(state = NORMAL)
+		add_button.config(state = NORMAL)
+		home_button.config(state = NORMAL)
 
 	#create the admin root
 	admin_root = Toplevel(root)
@@ -102,7 +121,7 @@ def start_maintenace(root, user, password):
 	add_image = PhotoImage(file = "images/users.png")
 	clear_image =  PhotoImage(file = "images/clear.png")
 	backup_image =  PhotoImage(file = "images/backup.png")
-	home_image =  PhotoImage(file = "images/home.png")	
+	home_image =  PhotoImage(file = "images/home.png")
 
 	# frameS
 	title_frame = Frame(admin_root)
@@ -152,7 +171,7 @@ def users_window(root, user, password):
 	def add_click():
 
 		child_add(user_root, user, password, pt)
-	
+
 	# function for deleteing a selected user, will make it so foot can not be deleted.
 	def delete_click():
 
@@ -215,7 +234,7 @@ def users_window(root, user, password):
 	# load the images
 	add_image = PhotoImage(file = "images/add_user.png")
 	delete_image =  PhotoImage(file = "images/delete.png")
-	gear_image =  PhotoImage(file = "images/gear.png")	
+	gear_image =  PhotoImage(file = "images/gear.png")
 
 	# frame
 	button_frame = Frame(user_root)
@@ -246,7 +265,7 @@ def users_window(root, user, password):
 	pt.unbind_all("<Tab>")
 	pt.unbind_all("<Return>")
 
-	# if user is not root then lock the add/remove users 
+	# if user is not root then lock the add/remove users
 	if user == "root":
 		add_button.config(state = NORMAL)
 		delete_button.config(state = NORMAL)
@@ -254,23 +273,23 @@ def users_window(root, user, password):
 	else:
 		add_button.config(state = DISABLED)
 		delete_button.config(state = DISABLED)
-		
+
 
 	# main loop
 	user_root.mainloop()
 
 
-# fucnction for calling child window 
+# fucnction for calling child window
 def child_add(root, user, password, pt):
 
 	# function for clicking the create button, checks passwords to make sure they match, then calls db funciton
 	def add_click():
 
-		# get values from the entry fields cast as strings 
+		# get values from the entry fields cast as strings
 		user_value = str(user_entry.get())
 		pass_value = str(pass_entry.get())
 		check_pass_value = str(check_pass_entry.get())
-		
+
 		if pass_value == check_pass_value:
 
 			user_check = add_user(user, password, user_value, pass_value)
@@ -294,7 +313,7 @@ def child_add(root, user, password, pt):
 		else:
 
 			message_label.config(text = "PASSWORDS DO NOT MATCH!", fg = "red")
-			child_root.after(1500, clear_text)		
+			child_root.after(1500, clear_text)
 
 	# simple function for deleting the message label
 	def clear_text():
@@ -306,7 +325,7 @@ def child_add(root, user, password, pt):
 
 		user_entry.delete(0, END)
 		pass_entry.delete(0, END)
-		check_pass_entry.delete(0, END)	
+		check_pass_entry.delete(0, END)
 
 	#create the admin root
 	child_root = Toplevel(root)
@@ -382,12 +401,12 @@ def child_add(root, user, password, pt):
 	user_entry.bind("<Tab>", lambda e: pass_entry.focus_set())
 
 	# if enter is pressed then focus on the password entry
-	pass_entry.bind("<Return>", lambda e: check_pass_entry.focus_set()) 
-	pass_entry.bind("<Tab>", lambda e: check_pass_entry.focus_set()) 
+	pass_entry.bind("<Return>", lambda e: check_pass_entry.focus_set())
+	pass_entry.bind("<Tab>", lambda e: check_pass_entry.focus_set())
 
 	#if enter is pressed same as clicking login button
 	check_pass_entry.bind("<Return>", lambda e: add_click())
-	check_pass_entry.bind("<Tab>", lambda e: user_entry.focus_set())		
+	check_pass_entry.bind("<Tab>", lambda e: user_entry.focus_set())
 
 	child_root.mainloop()
 
@@ -396,7 +415,3 @@ def child_add(root, user, password, pt):
 #**********************************************************************************************
 #						  		      END MAINTENANCE SCREEN
 #**********************************************************************************************
-
-
-
-

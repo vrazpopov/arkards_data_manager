@@ -1,18 +1,18 @@
 # *************************************************************************************************
-#										DATBASE FILE 
+#										DATBASE FILE
 # The purpose of this file is to set up all the functions that will interact with the database
-# Each screen will be able to access this file and call the desired function 
+# Each screen will be able to access this file and call the desired function
 #**************************************************************************************************
 
 # import modules
 import mysql.connector
 import os
-from datetime import datetime 
+from datetime import datetime
 import subprocess
 import pandas as pd
 
 
-# variables for connections, host is local in this case since on this machine, 
+# variables for connections, host is local in this case since on this machine,
 HOST_ID = "localhost"
 
 # this function creates the schema, also creates tables to go into schema
@@ -29,10 +29,10 @@ def start_db(user_id, password_id):
 		cursor = mydb.cursor()
 
 		# create arkards database if not already
-		cursor.execute("CREATE DATABASE IF NOT EXISTS arkards")	
+		cursor.execute("CREATE DATABASE IF NOT EXISTS arkards")
 
 		# create table if not already
-		cursor.execute("CREATE TABLE IF NOT EXISTS arkards.tags (tag VARCHAR(100) NOT NULL PRIMARY KEY, first_name VARCHAR(25), last_name VARCHAR(25), height VARCHAR(25), weight VARCHAR(25), sex VARCHAR(25), pic VARCHAR(10000))")			
+		cursor.execute("CREATE TABLE IF NOT EXISTS arkards.tags (tag VARCHAR(100) NOT NULL PRIMARY KEY, first_name VARCHAR(25), last_name VARCHAR(25), height VARCHAR(25), weight VARCHAR(25), sex VARCHAR(25), pic VARCHAR(10000))")
 
 		# commit close connections
 		mydb.commit()
@@ -41,8 +41,6 @@ def start_db(user_id, password_id):
 		return True
 
 	except mysql.connector.Error as err:
-
-		print(err)
 		return False
 
 # this function is for adding a tag to the db
@@ -75,13 +73,13 @@ def add_tag(user_id, password_id, tag, first_name, last_name, height, weight, se
 			return True
 
 		except mysql.connector.Error as err:
-			
+
 			print(err)
 			return False
 
-# this function is designed to check against an already added tag, since there can only be one 
+# this function is designed to check against an already added tag, since there can only be one
 def check_tag(user_id, password_id, tag):
-	
+
 		try:
 			# connect to mysql sever
 			mydb = mysql.connector.connect(
@@ -160,7 +158,7 @@ def backup_db(user_id, password_id):
 	if not os.path.exists("Backup"):
 	    os.makedirs("Backup")
 
-	# create file name 
+	# create file name
 	file_name = "Backup/" + time_now_string + ".sql"
 
 
@@ -255,9 +253,9 @@ def new_user_priv(user_id, password_id, new_user, new_password):
 		return True
 
 	except mysql.connector.Error as err:
-		
+
 		print(err)
-		return False	
+		return False
 
 
 # function for getting the users
@@ -321,11 +319,11 @@ def drop_user(user_id, password_id, user_drop):
 		return True
 
 	except mysql.connector.Error as err:
-		
-		print(err)
-		return False	
 
-# function for getting the users
+		print(err)
+		return False
+
+# function for getting the tag
 def get_tags(user_id, password_id):
 
 		# connect to mysql sever
@@ -386,10 +384,88 @@ def drop_tag(user_id, password_id, tag_drop):
 		return True
 
 	except mysql.connector.Error as err:
-		
+
 		print(err)
-		return False	
+		return False
+
+# function for checking a tag
+def check_tag(user_id, password_id, tag_check):
+
+	try:
+		# connect to mysql sever
+		mydb = mysql.connector.connect(
+		host = HOST_ID,
+		user = user_id,
+		password = password_id
+		)
+
+		# cursor instance
+		cursor = mydb.cursor()
+
+		# SQL query
+		query = "SELECT * FROM arkards.tags WHERE tag = %s"
+
+		#data tuple
+		data = (tag_check,)
+
+		# execute the command
+		cursor.execute(query, data)
+
+		# fetch the tag record
+		tag = cursor.fetchall()
+
+		# commit close connections
+		mydb.commit()
+		mydb.close()
+
+		# if there is no tag aka empty list then return false otherwise the tag is there
+		if not tag:
+			return False
+		else:
+			return True
+
+	except mysql.connector.Error as err:
+
+		print(err)
+		return False
+
+# function for getting tag info
+def get_tag_info(user_id, password_id, tag_get):
+
+	try:
+		# connect to mysql sever
+		mydb = mysql.connector.connect(
+		host = HOST_ID,
+		user = user_id,
+		password = password_id
+		)
+
+		# cursor instance
+		cursor = mydb.cursor()
+
+		# SQL query
+		query = "SELECT * FROM arkards.tags WHERE tag = %s"
+
+		#data tuple
+		data = (tag_get,)
+
+		# execute the command
+		cursor.execute(query, data)
+
+		# fetch the tag record
+		tag = cursor.fetchall()
+
+		# commit close connections
+		mydb.commit()
+		mydb.close()
+
+		return tag
+
+	except mysql.connector.Error as err:
+		pass
+
+
 
 # *************************************************************************************************
-#										END DATBASE FILE 
+#										END DATBASE FILE
 #**************************************************************************************************

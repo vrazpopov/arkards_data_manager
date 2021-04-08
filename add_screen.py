@@ -19,6 +19,8 @@ FONT_SMALL = ("Calibri", 12)
 
 
 def start_add(root, user, password):
+	# hide the parent
+	root.withdraw()
 
 	# function for browsing to open an image file, currently only png, jpeg, and bitmap files are shown
 	def browse():
@@ -29,11 +31,11 @@ def start_add(root, user, password):
 
 	# simple function for clearing text in the message field after error
 	def clear_text():
-		message_label.config(text = "")	
+		message_label.config(text = "")
 
 	# fuction for clicking the add button
 	def add_click():
-		
+
 		# get the values from the entry boxs
 		first_value = str(first_entry.get())
 		last_value = str(last_entry.get())
@@ -45,16 +47,16 @@ def start_add(root, user, password):
 
 		# make sure everthying is filled out
 		if (len(first_value) == 0 or len(last_value) == 0 or len(height_value) == 0 or len(weight_value) == 0 or len(sex_value) == 0 or len(tag_value) == 0 or len(pic_value) == 0):
-			
+
 			message_label.config(text = "MISSING ENTRY FIELD!", fg = "red")
 			add_root.after(1000, clear_text)
-		
+
 		else:
 			# check to make sure the tag is not already added
 			duplicate = check_tag(user, password, tag_value)
 
 			# if the tag is not there then we will save the image, and attempt to add the tag
-			if not duplicate:				
+			if not duplicate:
 
 				# call the image function, copy image and get new path
 				path = image_open(pic_value, tag_value)
@@ -68,12 +70,12 @@ def start_add(root, user, password):
 					add_root.after(1000, clear_text)
 				else:
 					message_label.config(text = "ERROR ADDING TAG!", fg = "red")
-					add_root.after(1000, clear_text)			
+					add_root.after(1000, clear_text)
 
-			# if the tag is already added, error 
+			# if the tag is already added, error
 			else:
 					message_label.config(text = "TAG ALREAY EXISTS!", fg = "red")
-					add_root.after(1000, clear_text)			
+					add_root.after(1000, clear_text)
 
 	# simple function for clearing the entry fields
 	def clear_entry():
@@ -87,6 +89,9 @@ def start_add(root, user, password):
 
 	# create child window
 	add_root = Toplevel(root)
+
+	# incase window is force closed
+	add_root.bind("<Destroy>", lambda e: root.deiconify())
 
 	# set the title and icon
 	add_root.title("ARKARDS - ADD")
@@ -113,7 +118,7 @@ def start_add(root, user, password):
 	# title and message labels
 	title_label = Label(add_root, text = "Add Tag to DB", font = FONT_LARGE, pady = 10)
 	message_label = Label(add_root, text = "", font = FONT_MEDIUM, pady = 10)
-	
+
 	# frames
 	entry_frame = Frame(add_root)
 	button_frame = Frame(add_root)
@@ -176,19 +181,21 @@ def start_add(root, user, password):
 	tag_entry.bind("<Tab>", lambda e: first_entry.focus_set())
 
 	first_entry.bind("<Return>", lambda e: last_entry.focus_set())
-	first_entry.bind("<Tab>", lambda e: last_entry.focus_set())	
+	first_entry.bind("<Tab>", lambda e: last_entry.focus_set())
 
 	last_entry.bind("<Return>", lambda e: height_entry.focus_set())
-	last_entry.bind("<Tab>", lambda e: height_entry.focus_set())	
+	last_entry.bind("<Tab>", lambda e: height_entry.focus_set())
 
 	height_entry.bind("<Return>", lambda e: weight_entry.focus_set())
 	height_entry.bind("<Tab>", lambda e: weight_entry.focus_set())
 
 	weight_entry.bind("<Return>", lambda e: sex_entry.focus_set())
-	weight_entry.bind("<Tab>", lambda e: sex_entry.focus_set())		
+	weight_entry.bind("<Tab>", lambda e: sex_entry.focus_set())
 
 	sex_entry.bind("<Return>", lambda e: tag_entry.focus_set())
-	sex_entry.bind("<Tab>", lambda e: tag_entry.focus_set())	
+	sex_entry.bind("<Tab>", lambda e: tag_entry.focus_set())
+
+
 
 	add_root.mainloop()
 
@@ -196,4 +203,3 @@ def start_add(root, user, password):
 #**********************************************************************************************
 #						  		      END ADD SCREEN
 #**********************************************************************************************
-

@@ -59,11 +59,11 @@ def tag_callback(client, user, msg):
     tag = msg_list["tag"]
 
     # check to moke sure it is in the DB, use login info
-    check = check_tag("root", "arkards", tag)
+    check = check_tag("root", "@rkARD$1921#", tag)
 
     # if we find the tag, take the info and populated the message. otherwise invalid
     if check:
-        tag_info = get_tag_info("root", "arkards", tag)
+        tag_info = get_tag_info("root", "@rkARD$1921#", tag)
 
         # convert the image to a basd64 string
         image_string = image_to_base64(tag_info[0][6])

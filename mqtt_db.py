@@ -33,6 +33,8 @@ def login_callback(client, userdata, msg):
     user_id = msg_list["user_id"]
     password_id = msg_list["password_id"]
 
+    print(msg_list)
+
     # call the startdb function, this fuction also check if we can login, if so then
     # return true otherwise false, then i guess publish it back to another topic where
     # the holo will bhe listening
@@ -45,9 +47,10 @@ def login_callback(client, userdata, msg):
                 }
 
     infoJson = json.dumps(info)
+    print(info)
 
     # plublish back to to the results where the holo will listen
-    client.publish("ark/login/results", infoJson)
+    client.publish("dwm/node/ark/login/results", infoJson)
 
 # fuction for the tag_callback
 def tag_callback(client, user, msg):
@@ -94,7 +97,7 @@ def tag_callback(client, user, msg):
     tag_json = json.dumps(tag_message)
 
     # publish to mqtt broker
-    client.publish("ark/tag/results",tag_json)
+    client.publish("dwm/node/ark/tag/results",tag_json)
 
 # function for turning an image into base64
 def image_to_base64(path):
@@ -117,19 +120,19 @@ def start_mqtt():
 
     # set the callback fucntions for connection and log
     client.on_connect = on_connect
-    #client.on_log = on_log
+    client.on_log = on_log
 
     # set the callback functions for the topics
-    client.message_callback_add("ark/login", login_callback)
-    client.message_callback_add("ark/tag", tag_callback)
+    client.message_callback_add("dwm/node/ark/login", login_callback)
+    client.message_callback_add("dwm/node/ark/tag", tag_callback)
 
     # connect tothe broker
     print("Connecting to broker: " + broker)
     client.connect(broker)
 
     # subscribe to the login and tags
-    client.subscribe("ark/login")
-    client.subscribe("ark/tag")
+    client.subscribe("dwm/node/ark/login")
+    client.subscribe("dwm/node/ark/tag")
 
     # start the loop for call backs to be processed
     client.loop_start()

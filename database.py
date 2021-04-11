@@ -198,8 +198,6 @@ def create_user(user_id, password_id, new_user, new_password):
 		password = password_id
 		)
 
-		print(password_id)
-
 		# cursor instance
 		cursor = mydb.cursor()
 

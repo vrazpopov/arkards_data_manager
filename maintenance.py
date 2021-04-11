@@ -160,7 +160,6 @@ def start_maintenace(root, user, password):
 	user_label.pack()
 	message_label.pack()
 
-
 	# main loop
 	admin_root.mainloop()
 
@@ -202,7 +201,7 @@ def users_window(root, user, password):
 						pt.model.df = new_data
 						pt.redraw()
 		except IndexError as err:
-			print(err)
+			pass
 
 
 	# hide the parent

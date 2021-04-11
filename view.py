@@ -26,24 +26,30 @@ def start_view(root, user, password):
 
 			row = pt.getSelectedRow()
 			tag_selected = pt.model.getValueAt(row, 0)
+			button_disable()
 
 			response = messagebox.askyesno("WARNING!","DO YOU WISH TO DELETE THIS TAG?")
 
 			if response == 1:
+				
 
 				check = drop_tag(user, password, tag_selected)
 
 				if not check:
 
 					messagebox.showerror("ERROR!","ERROR DELETING TAG")
+					button_normal()
 
 				else:
 
 					new_data = get_tags(user, password)
 					pt.model.df = new_data
 					pt.redraw()
+					button_normal()
 		except IndexError as err:
-			print(err)
+			pass
+
+		button_normal()
 
 	# function for viewing the picture
 	def view_click():
@@ -82,11 +88,22 @@ def start_view(root, user, password):
 
 			image_label.pack(expand = True)
 
+			button_disable()
+
+			child_root.bind("<Destroy>", lambda e: button_normal())
+
 			child_root.mainloop()
 
 		except IndexError as err:
-			print(err)
+			pass
 
+	def button_disable():
+		view_button.config(state = DISABLED)
+		delete_button.config(state = DISABLED)
+
+	def button_normal():
+		view_button.config(state = NORMAL)
+		delete_button.config(state = NORMAL)
 
 	# hide the parent window
 	root.withdraw()

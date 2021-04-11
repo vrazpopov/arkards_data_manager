@@ -61,7 +61,7 @@ def start_login(client):
 	infoJson = json.dumps(info)
 
 	# publish message
-	client.publish("ark/login", infoJson)
+	client.publish("dwm/node/ark/login", infoJson)
 
     #print that it is beeing added
 	print("Publishing...\n")
@@ -76,7 +76,7 @@ def start_tag(client):
     info = {"tag": tag}
     infoJson = json.dumps(info)
     # publish message
-    client.publish("ark/tag", infoJson)
+    client.publish("dwm/node/ark/tag", infoJson)
 
     #print that it is beeing added
     print("Publishing...\n")
@@ -97,12 +97,12 @@ def start():
     client.connect(broker)
 
     # set the callback functions for the topics
-    client.message_callback_add("ark/login/results", login_results_callback)
-    client.message_callback_add("ark/tag/results", tag_results_callback)
+    client.message_callback_add("dwm/node/ark/login/results", login_results_callback)
+    client.message_callback_add("dwm/node/ark/tag/results", tag_results_callback)
 
     # subscribe to the result topics for check the data sent to the database
-    client.subscribe("ark/login/results")
-    client.subscribe("ark/tag/results")
+    client.subscribe("dwm/node/ark/login/results")
+    client.subscribe("dwm/node/ark/tag/results")
 
     # start the loop for call backs to be processed
     client.loop_start()

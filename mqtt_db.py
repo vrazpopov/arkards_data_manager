@@ -33,8 +33,6 @@ def login_callback(client, userdata, msg):
     user_id = msg_list["user_id"]
     password_id = msg_list["password_id"]
 
-    print(msg_list)
-
     # call the startdb function, this fuction also check if we can login, if so then
     # return true otherwise false, then i guess publish it back to another topic where
     # the holo will bhe listening
@@ -47,7 +45,6 @@ def login_callback(client, userdata, msg):
                 }
 
     infoJson = json.dumps(info)
-    print(info)
 
     # plublish back to to the results where the holo will listen
     client.publish("dwm/node/ark/login/results", infoJson)
@@ -66,7 +63,7 @@ def tag_callback(client, user, msg):
 
     # if we find the tag, take the info and populated the message. otherwise invalid
     if check:
-        tag_info = get_tag_info("root", "@rkARD$1921#", tag)
+        tag_info = get_tag_info("root", "@rkARD$1921#", tag) # changed the user and password to be from the tag message, hard code is for testing.
 
         # convert the image to a basd64 string
         image_string = image_to_base64(tag_info[0][6])
@@ -120,7 +117,7 @@ def start_mqtt():
 
     # set the callback fucntions for connection and log
     client.on_connect = on_connect
-    client.on_log = on_log
+    #client.on_log = on_log # uncomment to see log, leave comment to suppress log
 
     # set the callback functions for the topics
     client.message_callback_add("dwm/node/ark/login", login_callback)
